@@ -9,6 +9,7 @@ Considering that the mass flow controller is connected to Secondary Electronics 
 chosen. 
 
 import classes
+
 SecondaryElectronics=classes.MFCPanel('/dev/ttyUSB0')
 controller=classes.MFC(panel=SecondaryElectronics, channel=1)
 
