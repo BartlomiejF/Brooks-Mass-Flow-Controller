@@ -11,6 +11,7 @@ chosen.
 import classes
 
 SecondaryElectronics=classes.MFCPanel('/dev/ttyUSB0')
+
 controller=classes.MFC(panel=SecondaryElectronics, channel=1)
 
 controller.OpenCloseValve()
