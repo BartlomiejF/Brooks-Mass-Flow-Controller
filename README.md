@@ -5,7 +5,7 @@ For now this project has some basic commands to control mass flow controllers wi
 
 Example of usage:
 
-Considering that the mass flow controller is connected to Secondary Electronics channel number 1 are basic options are properly
+Considering that the mass flow controller is connected to Secondary Electronics channel number 1 and basic options are properly
 chosen. 
 
 import classes
