@@ -17,5 +17,7 @@ controller=classes.MFC(panel=SecondaryElectronics, channel=1)
 controller.OpenCloseValve()
 
 controller.setSPRate(value=15000) 
+
 controller.updatePVRate()
+
 print(controller.PVRate)
