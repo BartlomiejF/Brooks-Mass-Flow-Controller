@@ -108,8 +108,7 @@ class MFCPanel():
 		'''Set gas flow.'''
 		com='AZ'+str(self.address)+'.0'+str(channel*2)+'P01='+str(val)+'\r'
 		com=bytes(com, encoding='utf-8')
-		self.sendCommand(command=com)
-		self.read()
+		self.sendCommand(command=com, read=False)
 		
 	def readUnits(self, channel):
 		'''Read gas flow units.'''
@@ -188,7 +187,7 @@ class MFCPanel():
 		state=str(state.decode(encoding='utf-8').split(',')[4])
 		return state
 		
-	def ReadFullScale(self, channel): #not sure if it is necessary
+	def ReadFullScale(self, channel):
 		'''Read maximum output'''
 		cmd='AZ'+str(self.address)+'.0'+str(channel*2)+'P09?\r'
 		cmd=bytes(cmd, encoding='utf-8')
@@ -215,5 +214,15 @@ class MFC():
 		self.PVRate=str(pvrate)+' '+self.unit
 		
 	def setSPRate(self, value):
-		self.panel.setOutput(channel=self.channel, val=value)
+		rate=float(value)
+		if self.decimal==0:
+			val='{:d}'.format(rate)+'.'
+		elif self.decimal==1:
+			val='{:.1f}'.format(rate)
+		elif self.decimal==2:
+			val='{:.2f}'.format(rate)
+		elif self.decimal==3:
+			val='{:.3f}'.format(rate)
+		self.SPRate=val
+		self.panel.setOutput(channel=self.channel, val=val)
 		
