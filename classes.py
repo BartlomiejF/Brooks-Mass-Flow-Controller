@@ -199,12 +199,18 @@ class MFC():
 	panel - an instantion of MFCPanel class
 	channel - should be integer (1-4), the number of channel that MFC is connected to '''
 	def __init__(self, panel, channel):
-		self.panel=panel
-		self.channel=channel
-		self.PVRate=0
-		self.unit=self.panel.readUnits(channel=self.channel)
+		self.PVRate=''
+		self.SPRate=''
+		self.FullScale=''
+		self.ReadOptions()
 		self.updatePVRate()
-		self.SPRate=0
+		
+	def ReadOptions(self):
+		'''If you change some options in ways other than using this code.'''
+		self.unit=self.panel.readUnits(channel=self.channel)
+		self.decimal=int(self.panel.ReadDecimalPoint(channel=self.channel))
+		self.FullScale=self.panel.ReadFullScale(channel=self.channel)
+		self.SPRate=self.panel.readOutput(channel=self.channel)
 		
 	def OpenCloseValve(self):
 		self.panel.OpenClose(channel=self.channel)
