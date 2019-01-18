@@ -8,7 +8,7 @@ class MFCPanel():
 				the /dev/ttyUSB* is actually usb to rs232 converter'''
 				
 	def __init__(self, device):
-		self.meas = serial.Serial(device, timeout=0.5)
+		self.meas = serial.Serial(device)
 		self.address=self.idn()
 		self.UnitCode={ '00': 'ml',
 							'01': 'mls',
@@ -73,14 +73,14 @@ class MFCPanel():
 		if isinstance(command, list):
 			for com in command:
 				self.meas.write(data=com)
-				time.sleep(0.5)
+				time.sleep(0.25)
 				if not read:
-					self.purge()
+					_=self.read()
 		elif isinstance(command, bytes):
 			self.meas.write(data=command)
-			time.sleep(0.5)
+			time.sleep(0.25)
 			if not read:
-				self.purge()
+				_=self.read()
  
 	def read(self):
 		"""Read single line from the panel (response from last command)."""
@@ -89,10 +89,6 @@ class MFCPanel():
 
 		return out
 	
-	def purge(self):
-		"""Read all lines from panel output to prevent reading wrong response."""
-		_=self.meas.readlines()
-		
 	def finish(self):
 		'''Close the file descriptor'''
 		self.meas.close()
