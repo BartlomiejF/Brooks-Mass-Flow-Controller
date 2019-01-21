@@ -218,7 +218,7 @@ class MFC():
 	def setSPRate(self, value):
 		rate=float(value)
 		if self.decimal==0:
-			val='{:d}'.format(rate)+'.'
+			val='{:.0f}'.format(rate)+'.'
 		elif self.decimal==1:
 			val='{:.1f}'.format(rate)
 		elif self.decimal==2:
