@@ -1,0 +1,6 @@
+#this rule should be put in /etc/udev/rules.d/ and it will provide you symbolic link to your /dev/ttyUSB* device in /dev/SecondaryElectronics/
+#the productid and vendorid can be taken from terminal by typing lsusb when you plug the device into your computer or from 
+#udevadm info /dev/ttyUSB<your_device> or udevadm info -a /dev/ttyUSB<your_device>
+#read more here: http://www.reactivated.net/writing_udev_rules.html
+#and here: https://linuxconfig.org/tutorial-on-how-to-write-basic-udev-rules-in-linux
+KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{idProduct}=="<yourProduct_id>", ATTRS{idVendor}=="<yourVendor_id>", MODE=="0666", SYMLINK+="SecondaryElectronics/panel%n"
