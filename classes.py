@@ -73,12 +73,12 @@ class MFCPanel():
 		if isinstance(command, list):
 			for com in command:
 				self.meas.write(data=com)
-				time.sleep(0.25)
+				time.sleep(0.35)
 				if not read:
 					_=self.read()
 		elif isinstance(command, bytes):
 			self.meas.write(data=command)
-			time.sleep(0.25)
+			time.sleep(0.35)
 			if not read:
 				_=self.read()
  
