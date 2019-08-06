@@ -85,8 +85,7 @@ class MFCPanel():
 	def read(self):
 		"""Read single line from the panel (response from last command)."""
 		out=self.meas.readline()
-		print(out)		# ~ for testing purposes:
-
+		print(out)		# for testing purposes:
 		return out
 	
 	def finish(self):
@@ -102,18 +101,20 @@ class MFCPanel():
 		
 	def setOutput(self, channel, val):
 		'''Set gas flow.'''
-		com='AZ'+str(self.address)+'.0'+str(channel*2)+'P01='+str(val)+'\r'
+		com=f"AZ{self.address}.0{channel*2}P01={val}\r"
 		com=bytes(com, encoding='utf-8')
 		self.sendCommand(command=com, read=False)
 		
 	def readUnits(self, channel):
 		'''Read gas flow units.'''
-		com='AZ'+str(self.address)+'.0'+str(channel*2-1)+'P04?\r'
+		# com='AZ'+str(self.address)+'.0'+str(channel*2-1)+'P04?\r'
+		com=f"AZ{self.address}.0{channel*2-1}P04?\r"
 		self.sendCommand(bytes(com, encoding='utf-8'))
 		outputUnit_first=self.read()
 		outputUnit_first=outputUnit_first.decode(encoding='utf-8').split(',')[4]
 		outputUnit_first=str(self.UnitCode[outputUnit_first])
-		com='AZ'+str(self.address)+'.0'+str(channel*2-1)+'P10?\r'
+		# com='AZ'+str(self.address)+'.0'+str(channel*2-1)+'P10?\r'
+		com=f"AZ{self.address}.0{channel*2-1}P10?\r"		
 		self.sendCommand(bytes(com, encoding='utf-8'))
 		outputUnit_second=self.read()
 		outputUnit_second=outputUnit_second.decode(encoding='utf-8').split(',')[4]
@@ -125,7 +126,8 @@ class MFCPanel():
 		"""Reads output of mfc connected to the channel(1 to 4) if unit argument is set to True the function reads also unit of the output
 		returns single output value as float if unit is False
 		returns list contatining with output flow value as float(index 0) and its unit as string(index 1)"""
-		com='AZ'+str(self.address)+'.0'+str(channel*2)+'P01?\r'
+		# com='AZ'+str(self.address)+'.0'+str(channel*2)+'P01?\r'
+		com=f"AZ{self.address}.0{channel*2}P01?\r"
 		self.sendCommand(bytes(com, encoding='utf-8'))
 		outputFlow=self.read()
 		outputFlow=float(outputFlow.decode(encoding='utf-8').split(',')[4])
@@ -136,7 +138,8 @@ class MFCPanel():
 		
 	def readPVRate(self, channel, unit=False):
 		'''Reads PVRate'''
-		com='AZ'+str(self.address)+'.0'+str(channel*2-1)+'K\r'
+		# com='AZ'+str(self.address)+'.0'+str(channel*2-1)+'K\r'
+		com=f"AZ{self.address}.0{channel*2-1}K\r"
 		self.sendCommand(bytes(com, encoding='utf-8'))
 		PVRate=self.read()
 		PVRate=float(PVRate.decode(encoding='utf-8').split(',')[6])
@@ -150,15 +153,17 @@ class MFCPanel():
 		The flow units should be set as VolUnit/TimeUnit. Please refer to UnitCode and RateTimeCode attributes(from __init__() function) for appropriate unit names"""
 		cmd=list()
 		if VolUnit:
-			com='AZ'+str(self.address)+'.0'+str(channel*2-1)+'P04='+str(self.RevUnitCode[VolUnit])+'\r'
+			# com='AZ'+str(self.address)+'.0'+str(channel*2-1)+'P04='+str(self.RevUnitCode[VolUnit])+'\r'
+			com=f"AZ{self.address}.0{channel*2-1}P04={self.RevUnitCode[VolUnit]}\r"
 			com=bytes(com, encoding='utf-8')
 			cmd+=[com]
 		if TimeUnit:
-			com='AZ'+str(self.address)+'.0'+str(channel*2-1)+'P10='+str(self.RevRateTimeCode[TimeUnit])+'\r'
+			# com='AZ'+str(self.address)+'.0'+str(channel*2-1)+'P10='+str(self.RevRateTimeCode[TimeUnit])+'\r'
+			com=f"AZ{self.address}.0{channel*2-1}P10={self.RevRateTimeCode[TimeUnit]}\r"
 			com=bytes(com, encoding='utf-8')
 			cmd+=[com]
 		self.sendCommand(cmd)
-		for cm in cmd: 		# ~ for testing purposes:
+		for _ in cmd: 		# for testing purposes:
 			self.read()
 			
 	def OpenClose(self, channel):
@@ -170,14 +175,16 @@ class MFCPanel():
 			state=0
 		else:
 			state=0
-		cmd='AZ'+str(self.address)+'.0'+str(channel*2)+'P29='+str(state)+'\r'
-		cmd=bytes(cmd, encoding='utf-8')
+		# cmd='AZ'+str(self.address)+'.0'+str(channel*2)+'P29='+str(state)+'\r'
+		com=f"AZ{self.address}.0{channel*2}P29={state}\r"
+		cmd=bytes(com, encoding='utf-8')
 		self.sendCommand([cmd], read=False)
 		
 	def ReadState(self, channel):
 		'''Check what is the state of VOR'''
-		cmd='AZ'+str(self.address)+'.0'+str(channel*2)+'P29?\r'
-		cmd=bytes(cmd, encoding='utf-8')
+		# cmd='AZ'+str(self.address)+'.0'+str(channel*2)+'P29?\r'
+		com=f"AZ{self.address}.0{channel*2}P29?\r"
+		cmd=bytes(com, encoding='utf-8')
 		self.sendCommand([cmd])
 		state=self.read()
 		state=str(state.decode(encoding='utf-8').split(',')[4])
@@ -185,8 +192,9 @@ class MFCPanel():
 		
 	def ReadFullScale(self, channel):
 		'''Read maximum output'''
-		cmd='AZ'+str(self.address)+'.0'+str(channel*2)+'P09?\r'
-		cmd=bytes(cmd, encoding='utf-8')
+		# cmd='AZ'+str(self.address)+'.0'+str(channel*2)+'P09?\r'
+		com=f"AZ{self.address}.0{channel*2}P09?\r"
+		cmd=bytes(com, encoding='utf-8')
 		self.sendCommand([cmd])
 		self.read()
 	
@@ -195,6 +203,8 @@ class MFC():
 	panel - an instantion of MFCPanel class
 	channel - should be integer (1-4), the number of channel that MFC is connected to '''
 	def __init__(self, panel, channel):
+		self.panel = panel
+		self.channel = channel
 		self.PVRate=''
 		self.SPRate=''
 		self.FullScale=''
@@ -213,18 +223,19 @@ class MFC():
 		
 	def updatePVRate(self):
 		pvrate=self.panel.readPVRate(channel=self.channel)
-		self.PVRate=str(pvrate)+' '+self.unit
+		# self.PVRate=str(pvrate)+' '+self.unit
+		self.PVRate = f"{pvrate} {self.unit}"
 		
 	def setSPRate(self, value):
 		rate=float(value)
 		if self.decimal==0:
-			val='{:.0f}'.format(rate)+'.'
+			val=f'{rate:.0f}.'
 		elif self.decimal==1:
-			val='{:.1f}'.format(rate)
+			val=f'{rate:.1f}'
 		elif self.decimal==2:
-			val='{:.2f}'.format(rate)
+			val=f'{rate:.2f}'
 		elif self.decimal==3:
-			val='{:.3f}'.format(rate)
+			val=f'{rate:.3f}'
 		self.SPRate=val
 		self.panel.setOutput(channel=self.channel, val=val)
 		
